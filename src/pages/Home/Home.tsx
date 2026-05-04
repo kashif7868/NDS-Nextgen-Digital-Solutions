@@ -1,10 +1,17 @@
 import HeroSection from "./HeroSection";
+import ServicesOverview from "./Servicesoverview";
+import WhyChooseUs from "./WhyChooseUs";
+import Testimonials from "./Testimonials";
+import CallToAction from "./CallToAction";
 
 const Home = () => {
   return (
     <main>
       <HeroSection />
-      {/* Future sections: Services, About, Portfolio, Contact CTA */}
+      <ServicesOverview />
+      <WhyChooseUs />
+      <Testimonials />
+      <CallToAction />
     </main>
   );
 };

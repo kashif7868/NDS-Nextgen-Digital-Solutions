@@ -3,54 +3,17 @@ import { Link } from "react-router-dom";
 import "../../assets/css/home/heroSection.css";
 
 const clients = [
-  {
-    name: "Ahmed Raza",
-    company: "TechVenture PK",
-    rating: 5,
-    review: "NDS delivered our e-commerce platform on time with exceptional quality. Their team is highly professional and responsive.",
-    avatar: "AR",
-  },
-  {
-    name: "Sara Khan",
-    company: "BrandLift Agency",
-    rating: 5,
-    review: "The SEO results were outstanding! Our organic traffic tripled in just 3 months. Highly recommend NDS for digital marketing.",
-    avatar: "SK",
-  },
-  {
-    name: "James Miller",
-    company: "FinEdge Solutions",
-    rating: 5,
-    review: "Their cyber security audit found critical vulnerabilities we didn't know about. Saved our business from a potential disaster.",
-    avatar: "JM",
-  },
-  {
-    name: "Fatima Malik",
-    company: "GreenLeaf Retail",
-    rating: 4,
-    review: "Stunning branding and content strategy. NDS understood our vision perfectly and executed it beautifully.",
-    avatar: "FM",
-  },
-  {
-    name: "David Chen",
-    company: "CloudSync Inc.",
-    rating: 5,
-    review: "World-class web development team. Our SaaS dashboard looks and performs better than we ever imagined.",
-    avatar: "DC",
-  },
-  {
-    name: "Usman Tariq",
-    company: "LogiTrack Ltd.",
-    rating: 5,
-    review: "From concept to launch in 6 weeks. NDS is the most efficient digital agency we've worked with — truly nextgen!",
-    avatar: "UT",
-  },
+  { name: "Ahmed Raza",   company: "TechVenture PK",   rating: 5, avatar: "AR", review: "NDS delivered our e-commerce platform on time with exceptional quality. Highly professional team." },
+  { name: "Sara Khan",    company: "BrandLift Agency",  rating: 5, avatar: "SK", review: "Our organic traffic tripled in 3 months. Outstanding SEO results — highly recommend NDS!" },
+  { name: "James Miller", company: "FinEdge Solutions", rating: 5, avatar: "JM", review: "Their cyber security audit found critical vulnerabilities. Saved our business from a potential disaster." },
+  { name: "Fatima Malik", company: "GreenLeaf Retail",  rating: 4, avatar: "FM", review: "Stunning branding and content strategy. NDS understood our vision and executed it beautifully." },
+  { name: "David Chen",   company: "CloudSync Inc.",    rating: 5, avatar: "DC", review: "World-class web development. Our SaaS dashboard looks and performs better than we ever imagined." },
+  { name: "Usman Tariq",  company: "LogiTrack Ltd.",    rating: 5, avatar: "UT", review: "From concept to launch in 6 weeks. The most efficient digital agency we've worked with — truly nextgen!" },
 ];
 
 const HeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Animated particle grid background
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -59,58 +22,47 @@ const HeroSection = () => {
 
     let animId: number;
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width  = window.innerWidth;
+      canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight;
     };
     resize();
     window.addEventListener("resize", resize);
 
-    const dots: { x: number; y: number; vx: number; vy: number; r: number }[] = [];
-    for (let i = 0; i < 80; i++) {
-      dots.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 1.5 + 0.5,
-      });
-    }
+    const dots = Array.from({ length: 70 }, () => ({
+      x:  Math.random() * window.innerWidth,
+      y:  Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r:  Math.random() * 1.4 + 0.4,
+    }));
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Connect nearby dots
       for (let i = 0; i < dots.length; i++) {
         for (let j = i + 1; j < dots.length; j++) {
           const dx = dots[i].x - dots[j].x;
           const dy = dots[i].y - dots[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 140) {
+          if (dist < 130) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 180, 255, ${0.12 * (1 - dist / 140)})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = `rgba(0,180,255,${0.1 * (1 - dist / 130)})`;
+            ctx.lineWidth = 0.5;
             ctx.moveTo(dots[i].x, dots[i].y);
             ctx.lineTo(dots[j].x, dots[j].y);
             ctx.stroke();
           }
         }
-      }
-
-      dots.forEach((dot) => {
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0, 180, 255, 0.45)";
+        ctx.arc(dots[i].x, dots[i].y, dots[i].r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,180,255,0.4)";
         ctx.fill();
-
-        dot.x += dot.vx;
-        dot.y += dot.vy;
-        if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
-        if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
-      });
-
+        dots[i].x += dots[i].vx;
+        dots[i].y += dots[i].vy;
+        if (dots[i].x < 0 || dots[i].x > canvas.width)  dots[i].vx *= -1;
+        if (dots[i].y < 0 || dots[i].y > canvas.height)  dots[i].vy *= -1;
+      }
       animId = requestAnimationFrame(draw);
     };
-
     draw();
     return () => {
       cancelAnimationFrame(animId);
@@ -120,46 +72,35 @@ const HeroSection = () => {
 
   return (
     <section className="hero">
-      {/* Animated canvas background */}
+      {/* Background */}
       <canvas ref={canvasRef} className="hero__canvas" />
-
-      {/* Glow orbs */}
       <div className="hero__orb hero__orb--1" />
       <div className="hero__orb hero__orb--2" />
 
+      {/* ── Main Content ── */}
       <div className="hero__content">
-        {/* Badge */}
         <div className="hero__badge">
           <span className="hero__badge-dot" />
           Lahore, Pakistan — Digital Agency
         </div>
 
-        {/* Heading */}
         <h1 className="hero__title">
-          <span className="hero__title-line">Nextgen</span>
-          <span className="hero__title-line hero__title-line--accent">
-            Digital
-          </span>
-          <span className="hero__title-line">Solutions</span>
+          <span>Nextgen</span>
+          <span className="hero__title--accent">Digital</span>
+          <span>Solutions</span>
         </h1>
 
-        {/* Subtext */}
         <p className="hero__sub">
-          We transform ideas into powerful digital products —{" "}
-          <br className="hero__br" />
-          Web Development, SEO, Branding & Cyber Security.
+          We transform ideas into powerful digital products —
+          Web Development, SEO, Branding &amp; Cyber Security.
         </p>
 
-        {/* Services pills */}
         <div className="hero__pills">
           {["Web Dev", "SEO", "Branding", "Cyber Security"].map((s) => (
-            <span key={s} className="hero__pill">
-              {s}
-            </span>
+            <span key={s} className="hero__pill">{s}</span>
           ))}
         </div>
 
-        {/* CTA Buttons */}
         <div className="hero__actions">
           <Link to="/services" className="hero__btn hero__btn--primary">
             Explore Services
@@ -170,42 +111,37 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="hero__scroll">
-        <div className="hero__scroll-line" />
-        <span>Scroll</span>
-      </div>
-
-      {/* Client Ratings Strip */}
+      {/* ── Ratings Strip ── */}
       <div className="hero__ratings">
         <div className="hero__ratings-header">
           <span className="hero__ratings-label">What Our Clients Say</span>
-          <div className="hero__ratings-summary">
+          <div className="hero__ratings-meta">
             <span className="hero__ratings-stars">★★★★★</span>
             <span className="hero__ratings-score">4.9 / 5</span>
             <span className="hero__ratings-count">from 120+ clients</span>
           </div>
         </div>
-        <div className="hero__ratings-track-wrap">
-          <div className="hero__ratings-fade hero__ratings-fade--left" />
-          <div className="hero__ratings-track">
+
+        <div className="hero__track-wrap">
+          <div className="hero__fade hero__fade--l" />
+          <div className="hero__track">
             {[...clients, ...clients].map((c, i) => (
-              <div className="hero__rating-card" key={i}>
-                <div className="hero__rating-top">
-                  <div className="hero__rating-avatar">{c.avatar}</div>
-                  <div>
-                    <div className="hero__rating-name">{c.name}</div>
-                    <div className="hero__rating-company">{c.company}</div>
+              <div className="hero__card" key={i}>
+                <div className="hero__card-top">
+                  <div className="hero__avatar">{c.avatar}</div>
+                  <div className="hero__card-info">
+                    <span className="hero__card-name">{c.name}</span>
+                    <span className="hero__card-company">{c.company}</span>
                   </div>
-                  <div className="hero__rating-stars">
+                  <span className="hero__card-stars">
                     {"★".repeat(c.rating)}{"☆".repeat(5 - c.rating)}
-                  </div>
+                  </span>
                 </div>
-                <p className="hero__rating-review">"{c.review}"</p>
+                <p className="hero__card-review">"{c.review}"</p>
               </div>
             ))}
           </div>
-          <div className="hero__ratings-fade hero__ratings-fade--right" />
+          <div className="hero__fade hero__fade--r" />
         </div>
       </div>
     </section>
