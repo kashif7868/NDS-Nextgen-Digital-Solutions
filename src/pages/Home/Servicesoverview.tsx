@@ -34,45 +34,48 @@ const services = [
 
 const ServicesOverview = () => {
   return (
-    <section className="svc" id="services">
-      <div className="svc__inner">
-        {/* Header */}
-        <div className="svc__header">
-          <span className="svc__eyebrow">What We Do</span>
-          <h2 className="svc__title">
-            Our Core <span className="svc__title--accent">Services</span>
-          </h2>
-          <p className="svc__sub">
-            End-to-end digital solutions designed to transform your business —
-            from idea to execution, we handle it all.
-          </p>
-        </div>
+    <div>
+      <section className="svc" id="services">
+        <div className="svc__inner">
+          {/* Header */}
+          <div className="svc__header">
+            <span className="svc__eyebrow">What We Do</span>
+            <h2 className="svc__title">
+              Our Core <span className="svc__title--accent">Services</span>
+            </h2>
+            <p className="svc__sub">
+              End-to-end digital solutions designed to transform your business —
+              from idea to execution, we handle it all.
+            </p>
+          </div>
 
-        {/* Cards */}
-        <div className="svc__grid">
-          {services.map((s) => (
-            <div className={`svc__card svc__card--${s.color}`} key={s.title}>
-              <div className="svc__card-icon">{s.icon}</div>
-              <h3 className="svc__card-title">{s.title}</h3>
-              <p className="svc__card-desc">{s.desc}</p>
-              <div className="svc__tags">
-                {s.tags.map((t) => (
-                  <span className="svc__tag" key={t}>{t}</span>
-                ))}
+          {/* Cards */}
+          <div className="svc__grid">
+            {services.map((s) => (
+              <div className={`svc__card svc__card--${s.color}`} key={s.title}>
+                <div className="svc__card-icon">{s.icon}</div>
+                <h3 className="svc__card-title">{s.title}</h3>
+                <p className="svc__card-desc">{s.desc}</p>
+                <div className="svc__tags">
+                  {s.tags.map((t) => (
+                    <span className="svc__tag" key={t}>{t}</span>
+                  ))}
+                </div>
+                <div className="svc__card-glow" />
               </div>
-              <div className="svc__card-glow" />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* CTA */}
-        <div className="svc__footer">
-          <Link to="/services" className="svc__btn">
-            View All Services →
-          </Link>
+          {/* CTA */}
+          <div className="svc__footer">
+            <Link to="/services" className="svc__btn">
+              View All Services →
+            </Link>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+    </div>
   );
 };
 
