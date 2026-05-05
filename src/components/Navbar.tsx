@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "../assets/css/navbar.css";
-import CompanyLogo from "../assets/images/logo.jpeg";
+import CompanyLogo from "../assets/images/logo.png";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -58,15 +58,7 @@ const Navbar = () => {
         <div className="navbar__inner">
           {/* Logo */}
           <NavLink to="/" className="navbar__logo" onClick={handleLinkClick}>
-            <img
-              src={CompanyLogo}
-              alt="NDS Logo"
-              className="navbar__logo-img"
-            />
-            <div className="navbar__logo-text">
-              <span className="navbar__logo-nds">NDS</span>
-              <span className="navbar__logo-full">Network Digital Solutions</span>
-            </div>
+            <img src={CompanyLogo} alt="NDS Logo" className="navbar__logo-img" />
           </NavLink>
 
           {/* Desktop Nav */}

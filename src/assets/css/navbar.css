@@ -69,33 +69,6 @@
   border-color: rgba(0, 180, 255, 0.6);
 }
 
-.navbar__logo-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-}
-
-.navbar__logo-nds {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--nds-white);
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
-.navbar__logo-full {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.58rem;
-  font-weight: 500;
-  color: var(--nds-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1;
-  white-space: nowrap;
-}
-
 /* ─── Desktop Nav ─── */
 .navbar__links {
   display: flex;
@@ -298,10 +271,6 @@
 
   .navbar__hamburger {
     display: flex;
-  }
-
-  .navbar__logo-full {
-    display: none;
   }
 
   .navbar__logo-img {
