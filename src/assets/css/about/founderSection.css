@@ -1,0 +1,213 @@
+/* ===== FOUNDER SECTION ===== */
+.founder-section {
+  background: #0d0d1f;
+  padding: 110px 0;
+  position: relative;
+}
+
+.founder-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 180, 255, 0.3), transparent);
+}
+
+.founder-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.founder-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+
+.section-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  color: #00b4ff;
+  border: 1px solid rgba(0, 180, 255, 0.35);
+  padding: 8px 18px;
+  margin-bottom: 28px;
+  text-transform: uppercase;
+}
+
+.founder-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  letter-spacing: -0.01em;
+}
+
+.founder-subtitle {
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.45);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.founder-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.founder-card--active {
+  border-color: rgba(0, 180, 255, 0.4);
+  transform: translateY(-6px);
+}
+
+.founder-img-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.founder-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+  filter: grayscale(30%);
+}
+
+.founder-card--active .founder-img {
+  transform: scale(1.05);
+  filter: grayscale(0%);
+}
+
+.founder-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+}
+
+.founder-number {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #00b4ff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(0, 180, 255, 0.25);
+}
+
+.founder-info {
+  padding: 20px 20px 24px;
+}
+
+.founder-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #00b4ff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.founder-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.founder-bio {
+  font-family: 'Lora', serif;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.48);
+  margin: 0 0 16px 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.founder-card--active .founder-bio {
+  max-height: 120px;
+  opacity: 1;
+}
+
+.founder-socials {
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+}
+
+.founder-card--active .founder-socials {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.founder-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(0, 180, 255, 0.3);
+  color: rgba(0, 180, 255, 0.7);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.founder-social-link:hover {
+  background: rgba(0, 180, 255, 0.12);
+  color: #00b4ff;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .founders-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .founders-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .founder-info {
+    padding: 14px 14px 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .founders-grid {
+    grid-template-columns: 1fr;
+  }
+}
