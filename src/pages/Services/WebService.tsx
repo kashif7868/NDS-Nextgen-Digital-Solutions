@@ -1,4 +1,4 @@
-import React from 'react';
+
 import "../../assets/css/service/webService.css"
 const WebService = () => {
   return (
