@@ -1,13 +1,12 @@
+import React from 'react';
 import "../../assets/css/service/webService.css"
-
-const 
- = () => {
+const WebService = () => {
   return (
     <div>
-      
+      <h1>hello
+      </h1>
     </div>
   );
 }
 
-export default 
-;
+export default WebService;
