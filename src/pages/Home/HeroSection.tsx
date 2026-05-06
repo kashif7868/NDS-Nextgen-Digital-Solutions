@@ -1,152 +1,361 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import type { Variants } from "framer-motion";
 import "../../assets/css/home/heroSection.css";
 
+/* ─────────────────────────────────────────
+   Animation variants
+───────────────────────────────────────── */
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
+const fadeLeft: Variants = {
+  hidden: { opacity: 0, x: 48 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
+const staggerContainer: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+  },
+};
+
+const chipVariant: Variants = {
+  hidden: { opacity: 0, scale: 0.88, y: 12 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const statVariant: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
+const avatarVariant: Variants = {
+  hidden: { opacity: 0, x: -12, scale: 0.85 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
+/* ─────────────────────────────────────────
+   Magnetic button hook
+───────────────────────────────────────── */
+function useMagnetic(strength = 0.35) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 300, damping: 20 });
+  const springY = useSpring(y, { stiffness: 300, damping: 20 });
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set((e.clientX - rect.left - rect.width / 2) * strength);
+    y.set((e.clientY - rect.top - rect.height / 2) * strength);
+  };
+  const onMouseLeave = () => { x.set(0); y.set(0); };
+
+  return { ref, springX, springY, onMouseMove, onMouseLeave };
+}
+
+/* ─────────────────────────────────────────
+   Data
+───────────────────────────────────────── */
 const clients = [
-  { name: "Ahmed Raza", company: "TechVenture PK", rating: 5, avatar: "AR", review: "NDS delivered our e-commerce platform on time with exceptional quality. Highly professional team." },
-  { name: "Sara Khan", company: "BrandLift Agency", rating: 5, avatar: "SK", review: "Our organic traffic tripled in 3 months. Outstanding SEO results — highly recommend NDS!" },
-  { name: "James Miller", company: "FinEdge Solutions", rating: 5, avatar: "JM", review: "Their cyber security audit found critical vulnerabilities. Saved our business from a potential disaster." },
-  { name: "Fatima Malik", company: "GreenLeaf Retail", rating: 4, avatar: "FM", review: "Stunning branding and content strategy. NDS understood our vision and executed it beautifully." },
-  { name: "David Chen", company: "CloudSync Inc.", rating: 5, avatar: "DC", review: "World-class web development. Our SaaS dashboard looks and performs better than we ever imagined." },
-  { name: "Usman Tariq", company: "LogiTrack Ltd.", rating: 5, avatar: "UT", review: "From concept to launch in 6 weeks. The most efficient digital agency we've worked with — truly nextgen!" },
+  { name: "Sarah M.",  initials: "SM", color: "#0057ff" },
+  { name: "James T.",  initials: "JT", color: "#00b4ff" },
+  { name: "Aisha K.",  initials: "AK", color: "#0070e0" },
+  { name: "Omar R.",   initials: "OR", color: "#0040c0" },
 ];
 
+const services = [
+  { icon: "🌐", label: "Web Development"  },
+  { icon: "📱", label: "Mobile Apps"      },
+  { icon: "☁️", label: "Cloud Solutions"  },
+  { icon: "🎨", label: "UI / UX Design"   },
+  { icon: "🔒", label: "Cybersecurity"    },
+  { icon: "📊", label: "Data Analytics"   },
+];
+
+const stats = [
+  { number: "150+", label: "Projects Delivered"  },
+  { number: "98%",  label: "Client Satisfaction" },
+  { number: "5★",   label: "Average Rating"       },
+];
+
+/* ─────────────────────────────────────────
+   Component
+───────────────────────────────────────── */
 const HeroSection = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRef   = useRef<HTMLElement>(null);
+  const visualRef    = useRef<HTMLDivElement>(null);
+  const isInView     = useInView(sectionRef, { once: true, margin: "-80px" });
+  const visualInView = useInView(visualRef,  { once: true, margin: "-60px" });
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  /* Magnetic buttons */
+  const primary   = useMagnetic(0.3);
+  const secondary = useMagnetic(0.3);
 
-    let animId: number;
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = canvas.parentElement?.offsetHeight || window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
+  /* Parallax mouse glow */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const glow1X = useTransform(mouseX, [-1, 1], [-30, 30]);
+  const glow1Y = useTransform(mouseY, [-1, 1], [-20, 20]);
+  const glow2X = useTransform(mouseX, [-1, 1], [20, -20]);
+  const glow2Y = useTransform(mouseY, [-1, 1], [15, -15]);
 
-    const dots = Array.from({ length: 70 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r: Math.random() * 1.4 + 0.4,
-    }));
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < dots.length; i++) {
-        for (let j = i + 1; j < dots.length; j++) {
-          const dx = dots[i].x - dots[j].x;
-          const dy = dots[i].y - dots[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 130) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0,180,255,${0.1 * (1 - dist / 130)})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.stroke();
-          }
-        }
-        ctx.beginPath();
-        ctx.arc(dots[i].x, dots[i].y, dots[i].r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0,180,255,0.4)";
-        ctx.fill();
-        dots[i].x += dots[i].vx;
-        dots[i].y += dots[i].vy;
-        if (dots[i].x < 0 || dots[i].x > canvas.width) dots[i].vx *= -1;
-        if (dots[i].y < 0 || dots[i].y > canvas.height) dots[i].vy *= -1;
-      }
-      animId = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    mouseX.set(((e.clientX - left) / width) * 2 - 1);
+    mouseY.set(((e.clientY - top) / height) * 2 - 1);
+  };
 
   return (
-    <div>
-      <section className="hero">
-        {/* Background */}
-        <canvas ref={canvasRef} className="hero__canvas" />
-        <div className="hero__orb hero__orb--1" />
-        <div className="hero__orb hero__orb--2" />
+    <section
+      className="hero"
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      aria-label="Hero"
+    >
+      {/* ── Background ── */}
+      <motion.div className="hero__glow-1" style={{ x: glow1X, y: glow1Y }} aria-hidden />
+      <motion.div className="hero__glow-2" style={{ x: glow2X, y: glow2Y }} aria-hidden />
+      <div className="hero__glow-3" aria-hidden />
+      <div className="hero__grid"   aria-hidden />
+      <div className="hero__noise"  aria-hidden />
 
-        {/* ── Main Content ── */}
-        <div className="hero__content">
-          <div className="hero__badge">
+      <div className="hero__inner">
+        {/* ══════════════════════════════════
+            LEFT — Content
+        ══════════════════════════════════ */}
+        <motion.div
+          className="hero__content"
+          initial="hidden"
+          animate={isInView ? "show" : "hidden"}
+        >
+          {/* Badge */}
+          <motion.div className="hero__badge" variants={fadeUp} custom={0}>
             <span className="hero__badge-dot" />
-            Lahore, Pakistan — Digital Agency
-          </div>
+            <span className="hero__badge-text">Next-Gen Digital Agency</span>
+          </motion.div>
 
-          <h1 className="hero__title">
-            <span>Nextgen</span>
-            <span className="hero__title--accent">Digital</span>
-            <span>Solutions</span>
-          </h1>
-
-          <p className="hero__sub">
-            We transform ideas into powerful digital products —
-            Web Development, SEO, Branding &amp; Cyber Security.
-          </p>
-
-          <div className="hero__pills">
-            {["Web Dev", "SEO", "Branding", "Cyber Security"].map((s) => (
-              <span key={s} className="hero__pill">{s}</span>
+          {/* Heading — word-by-word */}
+          <motion.h1
+            className="hero__heading"
+            variants={staggerContainer}
+            initial="hidden"
+            animate={isInView ? "show" : "hidden"}
+          >
+            {[
+              { text: "We Build",     gradient: false },
+              { text: "Digital",      gradient: true  },
+              { text: "Solutions",    gradient: true  },
+              { text: "That Scale",   gradient: false },
+            ].map((word, i) => (
+              <motion.span
+                key={i}
+                className={`hero__heading-line${word.gradient ? " hero__heading-gradient" : ""}`}
+                variants={fadeUp}
+                custom={0.1 + i * 0.08}
+              >
+                {word.text}{" "}
+              </motion.span>
             ))}
-          </div>
+          </motion.h1>
 
-          <div className="hero__actions">
-            <Link to="/services" className="hero__btn hero__btn--primary">
-              Explore Services
-            </Link>
-            <Link to="/contact" className="hero__btn hero__btn--ghost">
-              Contact Us →
-            </Link>
-          </div>
-        </div>
+          {/* Sub */}
+          <motion.p className="hero__sub" variants={fadeUp} custom={0.38}>
+            NextGen Digital Solutions crafts high-performance web, mobile, and
+            cloud products — turning your vision into seamless digital
+            experiences that drive real growth.
+          </motion.p>
 
-        {/* ── Ratings Strip ── */}
-        <div className="hero__ratings">
-          <div className="hero__ratings-header">
-            <span className="hero__ratings-label">What Our Clients Say</span>
-            <div className="hero__ratings-meta">
-              <span className="hero__ratings-stars">★★★★★</span>
-              <span className="hero__ratings-score">4.9 / 5</span>
-              <span className="hero__ratings-count">from 120+ clients</span>
-            </div>
-          </div>
+          {/* CTAs */}
+          <motion.div className="hero__ctas" variants={fadeUp} custom={0.48}>
+            {/* Primary — magnetic */}
+            <motion.a
+              ref={primary.ref}
+              style={{ x: primary.springX, y: primary.springY }}
+              onMouseMove={primary.onMouseMove}
+              onMouseLeave={primary.onMouseLeave}
+              whileTap={{ scale: 0.96 }}
+              className="hero__btn-primary"
+              href="/contact"
+            >
+              Get Started
+              <span className="hero__btn-arrow">→</span>
+            </motion.a>
 
-          <div className="hero__track-wrap">
-            <div className="hero__fade hero__fade--l" />
-            <div className="hero__track">
-              {[...clients, ...clients].map((c, i) => (
-                <div className="hero__card" key={i}>
-                  <div className="hero__card-top">
-                    <div className="hero__avatar">{c.avatar}</div>
-                    <div className="hero__card-info">
-                      <span className="hero__card-name">{c.name}</span>
-                      <span className="hero__card-company">{c.company}</span>
-                    </div>
-                    <span className="hero__card-stars">
-                      {"★".repeat(c.rating)}{"☆".repeat(5 - c.rating)}
-                    </span>
-                  </div>
-                  <p className="hero__card-review">"{c.review}"</p>
-                </div>
+            {/* Secondary — magnetic */}
+            <motion.a
+              ref={secondary.ref}
+              style={{ x: secondary.springX, y: secondary.springY }}
+              onMouseMove={secondary.onMouseMove}
+              onMouseLeave={secondary.onMouseLeave}
+              whileTap={{ scale: 0.96 }}
+              className="hero__btn-secondary"
+              href="/services"
+            >
+              Our Services
+            </motion.a>
+          </motion.div>
+
+          {/* Clients */}
+          <motion.div className="hero__clients" variants={fadeUp} custom={0.56}>
+            {/* Avatars with stagger */}
+            <motion.div
+              className="hero__client-avatars"
+              initial="hidden"
+              animate={isInView ? "show" : "hidden"}
+              variants={staggerContainer}
+            >
+              {clients.map((c, i) => (
+                <motion.div
+                  key={c.name}
+                  className="hero__client-avatar hero__client-avatar--initials"
+                  style={{ background: `${c.color}22` }}
+                  title={c.name}
+                  variants={avatarVariant}
+                  custom={0.6 + i * 0.07}
+                  whileHover={{ y: -5, scale: 1.12, zIndex: 10 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                >
+                  {c.initials}
+                </motion.div>
               ))}
+            </motion.div>
+
+            <div className="hero__client-info">
+              <motion.div
+                className="hero__client-stars"
+                initial="hidden"
+                animate={isInView ? "show" : "hidden"}
+                variants={staggerContainer}
+                aria-label="5 out of 5 stars"
+              >
+                {[...Array(5)].map((_, i) => (
+                  <motion.span
+                    key={i}
+                    className="hero__star"
+                    variants={chipVariant}
+                    custom={0.7 + i * 0.05}
+                  >
+                    ★
+                  </motion.span>
+                ))}
+              </motion.div>
+              <p className="hero__client-meta">
+                <strong>500+ happy clients</strong> — rated 5/5
+              </p>
             </div>
-            <div className="hero__fade hero__fade--r" />
-          </div>
-        </div>
-      </section>
-    </div>
+          </motion.div>
+        </motion.div>
+
+        {/* ══════════════════════════════════
+            RIGHT — Visual
+        ══════════════════════════════════ */}
+        <motion.div
+          className="hero__visual"
+          ref={visualRef}
+          initial="hidden"
+          animate={visualInView ? "show" : "hidden"}
+        >
+          {/* Services card */}
+          <motion.div
+            className="hero__card"
+            variants={fadeLeft}
+            custom={0}
+            whileHover={{
+              borderColor: "rgba(0,180,255,0.28)",
+              boxShadow: "0 0 48px rgba(0,87,255,0.12)",
+              transition: { duration: 0.3 },
+            }}
+          >
+            <p className="hero__card-label">What We Do</p>
+            <motion.div
+              className="hero__card-services"
+              variants={staggerContainer}
+              initial="hidden"
+              animate={visualInView ? "show" : "hidden"}
+            >
+              {services.map((s) => (
+                <motion.div
+                  key={s.label}
+                  className="hero__service-chip"
+                  variants={chipVariant}
+                  whileHover={{
+                    y: -3,
+                    background: "rgba(0,180,255,0.1)",
+                    borderColor: "rgba(0,180,255,0.28)",
+                    transition: { duration: 0.2 },
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <span className="hero__service-chip-icon">{s.icon}</span>
+                  {s.label}
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            className="hero__stats"
+            initial="hidden"
+            animate={visualInView ? "show" : "hidden"}
+          >
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                className="hero__stat"
+                variants={statVariant}
+                custom={0.25 + i * 0.1}
+                whileHover={{
+                  y: -4,
+                  borderColor: "rgba(0,180,255,0.32)",
+                  boxShadow: "0 8px 32px rgba(0,87,255,0.15)",
+                  transition: { type: "spring", stiffness: 300, damping: 18 },
+                }}
+              >
+                <div className="hero__stat-number">{s.number}</div>
+                <div className="hero__stat-label">{s.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 
