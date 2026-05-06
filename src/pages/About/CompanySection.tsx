@@ -1,4 +1,3 @@
-import React from 'react';
 import "../../assets/css/about/companySection.css";
 
 const CompanySection = () => {

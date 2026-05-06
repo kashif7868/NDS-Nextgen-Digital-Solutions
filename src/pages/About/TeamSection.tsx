@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import "../../assets/css/about/teamSection.css";
 
 const departments = ["All", "Engineering", "Design", "Marketing", "Operations"];

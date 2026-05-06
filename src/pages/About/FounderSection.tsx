@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import "../../assets/css/about/founderSection.css";
 
 // Import founder images — replace these paths with actual image paths
